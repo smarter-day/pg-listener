@@ -1,5 +1,7 @@
 # PG Listener
 
+[![PG Listener Tests](https://github.com/smarter-day/pg-listener/actions/workflows/tests.yml/badge.svg)](https://github.com/smarter-day/pg-listener/actions/workflows/tests.yml)
+
 A lightweight Go library for listening to PostgreSQL notifications in parallel across channels while preserving in-order delivery within each channel. It reconnects on errors, ensuring fault tolerance and redundancy.
 
 ## Key Features
