@@ -1,9 +1,9 @@
-package listener_test
+package pgwatcher_test
 
 import (
 	"context"
 	"errors"
-	"listener"
+	"github.com/smarter-day/pgwatcher"
 	"sync"
 	"testing"
 	"time"
@@ -16,13 +16,13 @@ type mockListener struct {
 	mu             sync.Mutex
 	connected      bool
 	channels       map[string]bool
-	notificationsC chan *listener.Notification
+	notificationsC chan *pgwatcher.Notification
 }
 
 func newMockListener() *mockListener {
 	return &mockListener{
 		channels:       make(map[string]bool),
-		notificationsC: make(chan *listener.Notification, 100),
+		notificationsC: make(chan *pgwatcher.Notification, 100),
 	}
 }
 
@@ -58,7 +58,7 @@ func (m *mockListener) UnListen(ctx context.Context, channel string) error {
 	return nil
 }
 
-func (m *mockListener) WaitForNotification(ctx context.Context) (*listener.Notification, error) {
+func (m *mockListener) WaitForNotification(ctx context.Context) (*pgwatcher.Notification, error) {
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -80,7 +80,7 @@ func (m *mockListener) Ping(ctx context.Context) error {
 }
 
 // pushNotification simulates server pushing a notification.
-func (m *mockListener) pushNotification(ntf *listener.Notification) {
+func (m *mockListener) pushNotification(ntf *pgwatcher.Notification) {
 	m.notificationsC <- ntf
 }
 
@@ -94,7 +94,7 @@ func TestNotifierWithSingleChannel(t *testing.T) {
 	defer cancel()
 
 	mockL := newMockListener()
-	n := listener.NewNotifier(mockL)
+	n := pgwatcher.NewNotifier(mockL)
 
 	// Start the Notifier (it will Connect automatically in the runLoop).
 	err := n.Run(ctx)
@@ -109,7 +109,7 @@ func TestNotifierWithSingleChannel(t *testing.T) {
 	go func() {
 		time.Sleep(200 * time.Millisecond) // Let it set up
 		for _, w := range want {
-			mockL.pushNotification(&listener.Notification{
+			mockL.pushNotification(&pgwatcher.Notification{
 				Channel: "foo",
 				Payload: []byte(w),
 			})
@@ -141,7 +141,7 @@ func TestNotifierWithMultipleChannels(t *testing.T) {
 	defer cancel()
 
 	mockL := newMockListener()
-	n := listener.NewNotifier(mockL)
+	n := pgwatcher.NewNotifier(mockL)
 	err := n.Run(ctx)
 	is.NoErr(err)
 
@@ -152,10 +152,10 @@ func TestNotifierWithMultipleChannels(t *testing.T) {
 	// We want to ensure concurrency across channels, so we push them at the same time.
 	go func() {
 		time.Sleep(200 * time.Millisecond)
-		mockL.pushNotification(&listener.Notification{Channel: "foo", Payload: []byte("foo1")})
-		mockL.pushNotification(&listener.Notification{Channel: "bar", Payload: []byte("bar1")})
-		mockL.pushNotification(&listener.Notification{Channel: "foo", Payload: []byte("foo2")})
-		mockL.pushNotification(&listener.Notification{Channel: "bar", Payload: []byte("bar2")})
+		mockL.pushNotification(&pgwatcher.Notification{Channel: "foo", Payload: []byte("foo1")})
+		mockL.pushNotification(&pgwatcher.Notification{Channel: "bar", Payload: []byte("bar1")})
+		mockL.pushNotification(&pgwatcher.Notification{Channel: "foo", Payload: []byte("foo2")})
+		mockL.pushNotification(&pgwatcher.Notification{Channel: "bar", Payload: []byte("bar2")})
 	}()
 
 	var gotFoo, gotBar []string

@@ -1,4 +1,4 @@
-name: PG Listener Tests
+name: PG Watcher Tests
 
 on:
   push:

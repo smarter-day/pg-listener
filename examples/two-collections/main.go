@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/tracelog"
-	"listener"
+	"github.com/smarter-day/pgwatcher"
 	"log"
 	"os"
 	"time"
@@ -44,8 +44,8 @@ func main() {
 	defer pool.Close()
 
 	// Initialize IListener and INotifier
-	l := listener.NewListener(pool)
-	n := listener.NewNotifier(l)
+	l := pgwatcher.NewListener(pool)
+	n := pgwatcher.NewNotifier(l)
 
 	// Run INotifier with context cancellation
 	ctx, cancel := context.WithTimeout(context.Background(), time.Hour)

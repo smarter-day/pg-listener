@@ -1,4 +1,4 @@
-module listener
+module github.com/smarter-day/pgwatcher
 
 go 1.22.8
 

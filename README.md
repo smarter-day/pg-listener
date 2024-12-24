@@ -1,6 +1,6 @@
-# PG Listener
+# PG Watcher
 
-[![PG Listener Tests](https://github.com/smarter-day/pg-listener/actions/workflows/tests.yml/badge.svg)](https://github.com/smarter-day/pg-listener/actions/workflows/tests.yml)
+[![PG Watcher Tests](https://github.com/smarter-day/pg-listener/actions/workflows/tests.yml/badge.svg)](https://github.com/smarter-day/pg-listener/actions/workflows/tests.yml)
 
 A lightweight Go library for listening to PostgreSQL notifications in parallel across channels while preserving in-order delivery within each channel. It reconnects on errors, ensuring fault tolerance and redundancy.
 
@@ -37,7 +37,7 @@ import (
     "time"
 
     "github.com/jackc/pgx/v5/pgxpool"
-    "github.com/smarter-day/pg-listener"
+    "github.com/smarter-day/pgwatcher"
 )
 
 func main() {
@@ -49,10 +49,10 @@ func main() {
     defer dbpool.Close()
 
     // 2. Create an IListener
-    l := listener.NewListener(dbpool)
+    l := pgwatcher.NewListener(dbpool)
 
     // 3. Create and run the notifier
-    n := listener.NewNotifier(l)
+    n := pgwatcher.NewNotifier(l)
     ctx, cancel := context.WithCancel(context.Background())
     if err := n.Run(ctx); err != nil {
         panic(err)
