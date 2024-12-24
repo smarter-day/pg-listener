@@ -1,11 +1,10 @@
 package main
 
 import (
-	"app/listener"
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/tracelog"
-	"github.com/smarter-day/pg-listener"
+	"listener"
 	"log"
 	"os"
 	"time"
