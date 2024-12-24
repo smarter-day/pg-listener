@@ -1,9 +1,9 @@
 package listener_test
 
 import (
-	"app/listener"
 	"context"
 	"errors"
+	"listener"
 	"sync"
 	"testing"
 	"time"

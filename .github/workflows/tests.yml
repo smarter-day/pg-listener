@@ -1,4 +1,4 @@
-name: FireORM Tests
+name: PG Listener Tests
 
 on:
   push:
